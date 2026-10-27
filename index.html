@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Speaker Queue</title>
+    <link rel="stylesheet" href="style.css"/>
+</head>
+<body id="app-body">
+    <!-- Header -->
+    <header>
+        <div class="header-left">
+            <svg class="icon" viewBox="0 0 24 24"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="23"></line><line x1="8" y1="23" x2="16" y2="23"></line></svg>
+            <span>SpeakerQueue</span>
+            <button onclick="app.toggleTheme()" class="btn-icon-toggle" aria-label="Toggle Dark Mode">
+                🌓
+            </button>
+        </div>
+        <div class="header-btn-group">
+            <button onclick="app.resetQueue()" class="btn-header" style="background-color: var(--color-secondary);">Reset Queue</button>
+            <button onclick="app.toggleView('setup')" class="btn-header" style="background-color: var(--color-accent);">Edit Names</button>
+        </div>
+    </header>
+
+    <main>
+        <!-- VIEW: Setup -->
+        <div id="view-setup" class="view">
+            <div class="setup-container">
+                <h2 style="margin-bottom: 0.5rem; color: var(--color-primary);">Participants</h2>
+                <p style="font-size: 0.9rem; margin-bottom: 1rem; opacity: 0.7;">Enter names, one per line.</p>
+                <textarea id="input-names" placeholder="John&#10;Jack&#10;Ann&#10;Sarah"></textarea>
+                <button onclick="app.saveNamesAndStart()" class="btn-primary" style="border-radius: 8px;">
+                    Update Names & Go to List
+                </button>
+            </div>
+        </div>
+
+        <!-- VIEW: List -->
+        <div id="view-list" class="view active">
+            <div class="stats-bar">
+                <button onclick="app.toggleStats()" class="btn-action" style="background-color: var(--color-primary); color: white; font-size: 0.75rem;">
+                    Session Statistics
+                </button>
+                <span id="stats-counter">0 speakers / 0 participants</span>
+            </div>
+            
+            <div id="participants-container" class="list-container">
+                <!-- Items injected here -->
+            </div>
+
+            <!-- Stats Panel (Hidden by default) -->
+            <div id="stats-panel" class="stats-panel" style="display: none;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+                    <h3 style="font-size: 0.9rem; opacity: 0.9;">Session Statistics</h3>
+                    <button onclick="app.toggleStats()" style="background: none; border: none; color: white; font-weight: bold; font-size: 1.2rem; padding: 0;">&times;</button>
+                </div>
+                <table class="stats-table">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th style="text-align: right;">Times Spoken</th>
+                        </tr>
+                    </thead>
+                    <tbody id="stats-body">
+                        <!-- Stats rows -->
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Footer -->
+            <div class="footer">
+                Made with ❤️ by Navid 🌅 for my dear friends.
+            </div>
+        </div>
+    </main>
+
+    <!-- Modal: Confirmation (Remove) -->
+    <div id="modal-confirm" class="modal-overlay">
+        <div class="modal">
+            <h3 style="color: var(--color-secondary); margin-bottom: 8px;">Remove Speaker?</h3>
+            <p style="opacity: 0.8; font-size: 0.9rem;">Remove <b id="confirm-name"></b> from queue? <br><span style="font-size:0.8em; color: var(--color-secondary);">(Will NOT count as turn taken)</span></p>
+            <div class="modal-actions">
+                <!-- Cancel on LEFT, Action on RIGHT -->
+                <button onclick="app.closeModal('modal-confirm')" class="btn-modal-cancel">Cancel</button>
+                <button id="btn-confirm-yes" class="btn-remove">Yes, Remove</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Change Place -->
+    <div id="modal-assign" class="modal-overlay">
+        <div class="modal">
+            <h3 style="color: var(--color-primary);">Change Place</h3>
+            <p style="opacity: 0.8; font-size: 0.9rem; margin-bottom: 1rem;">Move <b id="assign-name"></b> to position:</p>
+            
+            <div class="slider-container">
+                <div id="slider-display" class="slider-value">1</div>
+                <input type="range" id="assign-slider" min="1" max="10" step="1" oninput="app.updateSliderDisplay(this.value)">
+                <input type="number" id="assign-input" min="1" style="width: 60px; padding: 5px; text-align: center; margin-top: 5px; border: 1px solid #ccc; border-radius: 4px; color:black;" oninput="app.syncSlider(this.value)">
+            </div>
+
+            <div class="modal-actions">
+                <!-- Cancel on LEFT, Save on RIGHT -->
+                <button onclick="app.closeModal('modal-assign')" class="btn-modal-cancel">Cancel</button>
+                <button id="btn-assign-save" class="btn-change">Save</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
